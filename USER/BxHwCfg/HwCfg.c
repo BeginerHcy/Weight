@@ -135,6 +135,10 @@ void HwCfgInit()
 	CfgPINOut(DOLED);	
 
 	CfgPINOut(SPI1NSS);	
+	CfgPINOut(SPI1SYN);	
+	
+	SetDO(SPI1SYN,1);
+	
 	CfgPINOut(RS485DE);	
 	CfgPINOut(RS485DE2);	
 	
@@ -373,9 +377,9 @@ void SPI1_Init(void)
 	CfgPINOut(SPI1MISO);
 	CfgPINOut(SPI1MOSI);	
 	
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
-	GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource3, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource4, GPIO_AF_SPI1);
+	GPIO_PinAFConfig(GPIOB, GPIO_PinSource5, GPIO_AF_SPI1);
 	
 	SetDO(SPI1NSS,1);
 	
@@ -383,15 +387,15 @@ void SPI1_Init(void)
   SPI_InitStructure.SPI_Direction 				= SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_Mode 							= SPI_Mode_Master;
   SPI_InitStructure.SPI_DataSize 					= SPI_DataSize_8b;
-  SPI_InitStructure.SPI_CPOL 							= SPI_CPOL_Low;
+  SPI_InitStructure.SPI_CPOL 							= SPI_CPOL_High;
   SPI_InitStructure.SPI_CPHA 							= SPI_CPHA_2Edge;
   SPI_InitStructure.SPI_NSS 							= SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
   SPI_InitStructure.SPI_FirstBit 					= SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial 		= 7;
   SPI_Init(macSPI1 , &SPI_InitStructure);
   SPI_Cmd(macSPI1 , ENABLE);
-	SPI1_ReadWriteByte(0xff);
+//	SPI1_ReadWriteByte(0xff);
 }
 
 uint8_t ReadIn(uint32_t GPIOxADR, uint16_t GPIO_Pin,GPIOMode_TypeDef GPIOMode,GPIOPuPd_TypeDef GPIOPupd)
@@ -688,7 +692,7 @@ void CAN1_RX0_IRQHandler(void)
 	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);	
 	
 }
-uint8_t SPI1_ReadWriteByte(uint8_t TxData)
+/*uint8_t SPI1_ReadWriteByte(uint8_t TxData)
 {
   while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}//
 	
@@ -698,7 +702,7 @@ uint8_t SPI1_ReadWriteByte(uint8_t TxData)
  
 	return SPI_I2S_ReceiveData(SPI1); //
 }
-
+*/
 void usec_delay(unsigned int t)
 {
 	delay_us(100);

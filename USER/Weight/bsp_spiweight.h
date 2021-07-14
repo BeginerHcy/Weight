@@ -2,24 +2,46 @@
 #define __BSP_SPIWEIGHT_H__
 
 /* 包含头文件 ----------------------------------------------------------------*/
+#include "bsp_spi.h"
 
+
+#define GPIO_PIN_0                 ((uint16_t)0x0001)  /* Pin 0 selected    */
+#define GPIO_PIN_1                 ((uint16_t)0x0002)  /* Pin 1 selected    */
+#define GPIO_PIN_2                 ((uint16_t)0x0004)  /* Pin 2 selected    */
+#define GPIO_PIN_3                 ((uint16_t)0x0008)  /* Pin 3 selected    */
+#define GPIO_PIN_4                 ((uint16_t)0x0010)  /* Pin 4 selected    */
+#define GPIO_PIN_5                 ((uint16_t)0x0020)  /* Pin 5 selected    */
+#define GPIO_PIN_6                 ((uint16_t)0x0040)  /* Pin 6 selected    */
+#define GPIO_PIN_7                 ((uint16_t)0x0080)  /* Pin 7 selected    */
+#define GPIO_PIN_8                 ((uint16_t)0x0100)  /* Pin 8 selected    */
+#define GPIO_PIN_9                 ((uint16_t)0x0200)  /* Pin 9 selected    */
+#define GPIO_PIN_10                ((uint16_t)0x0400)  /* Pin 10 selected   */
+#define GPIO_PIN_11                ((uint16_t)0x0800)  /* Pin 11 selected   */
+#define GPIO_PIN_12                ((uint16_t)0x1000)  /* Pin 12 selected   */
+#define GPIO_PIN_13                ((uint16_t)0x2000)  /* Pin 13 selected   */
+#define GPIO_PIN_14                ((uint16_t)0x4000)  /* Pin 14 selected   */
+#define GPIO_PIN_15                ((uint16_t)0x8000)  /* Pin 15 selected   */
+#define GPIO_PIN_All               ((uint16_t)0xFFFF)  /* All pins selected */
 
 /* 类型定义 ------------------------------------------------------------------*/
 /* 宏定义 --------------------------------------------------------------------*/
 #define WEIGHT_SPIx                 SPI1
-#define WEIGHT_SPIx_CLK_ENABLE()    __HAL_RCC_SPI1_CLK_ENABLE()
-#define WEIGHT_GPIO_CLK_ENABLE()   {__HAL_RCC_GPIOA_CLK_ENABLE();__HAL_RCC_GPIOC_CLK_ENABLE();__HAL_RCC_GPIOB_CLK_ENABLE();} 
+//#define WEIGHT_SPIx_CLK_ENABLE()    __HAL_RCC_SPI1_CLK_ENABLE()
+//#define WEIGHT_GPIO_CLK_ENABLE()   {__HAL_RCC_GPIOA_CLK_ENABLE();__HAL_RCC_GPIOC_CLK_ENABLE();__HAL_RCC_GPIOB_CLK_ENABLE();} 
 #define WEIGHT_CS_Pin              GPIO_PIN_13
 #define WEIGHT_CS_GPIO_Port        GPIOC
+
 #define WEIGHT_SCK_Pin             GPIO_PIN_5
 #define WEIGHT_SCK_GPIO_Port       GPIOA
+
 #define WEIGHT_MISO_Pin            GPIO_PIN_4
 #define WEIGHT_MISO_GPIO_Port      GPIOB
+
 #define WEIGHT_MOSI_Pin            GPIO_PIN_5
 #define WEIGHT_MOSI_GPIO_Port      GPIOB
                                    
-#define WEIGHT_CS_ENABLE()         HAL_GPIO_WritePin(WEIGHT_CS_GPIO_Port,WEIGHT_CS_Pin,GPIO_PIN_RESET)
-#define WEIGHT_CS_DISABLE()        HAL_GPIO_WritePin(WEIGHT_CS_GPIO_Port,WEIGHT_CS_Pin,GPIO_PIN_SET)
+//#define WEIGHT_CS_ENABLE()         HAL_GPIO_WritePin(WEIGHT_CS_GPIO_Port,WEIGHT_CS_Pin,GPIO_PIN_RESET)
+//#define WEIGHT_CS_DISABLE()        HAL_GPIO_WritePin(WEIGHT_CS_GPIO_Port,WEIGHT_CS_Pin,GPIO_PIN_SET)
 
 
 
@@ -126,7 +148,7 @@
 
 
 /* 扩展变量 ------------------------------------------------------------------*/
-extern SPI_HandleTypeDef hspi_weight;
+
 
 /* 函数声明 ------------------------------------------------------------------*/
 
@@ -140,7 +162,9 @@ unsigned int AD7190_ContinuousReadAvg(unsigned char sampleNumber);
 unsigned int AD7190_TemperatureRead(void);
 void weight_ad7190_conf(void);
 unsigned int weight_ad7190_ReadAvg(unsigned char sampleNumber);
-
+unsigned int AD7190_GetRegisterValue(unsigned char registerAddress,
+                                      unsigned char bytesNumber);
+void AD7190_WaitRdyGoLow(void);
 
 #endif  /* __BSP_SPIWEIGHT_H__ */
 

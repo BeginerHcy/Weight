@@ -23,7 +23,8 @@
 #include "RTMotion.h"
 #include <stdio.h>
 #include <plctypes.h>
-	#include "IAP.h"
+#include "IAP.h"
 #include "bsp.h"
+#include "bsp_spiweight.h"
 
 #endif

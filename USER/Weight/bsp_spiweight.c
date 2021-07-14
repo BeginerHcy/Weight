@@ -20,10 +20,10 @@
 
 /* 私有类型定义 --------------------------------------------------------------*/
 /* 私有宏定义 ----------------------------------------------------------------*/
-#define AIN1P_AIN2N
+//#define AIN1P_AIN2N
 
 /* 私有变量 ------------------------------------------------------------------*/
-SPI_HandleTypeDef hspi_weight;
+//SPI_HandleTypeDef hspi_weight;
 
 /* 扩展变量 ------------------------------------------------------------------*/
 /* 私有函数原形 --------------------------------------------------------------*/
@@ -38,49 +38,7 @@ SPI_HandleTypeDef hspi_weight;
 void MX_WEIGHT_SPI_Init(void)
 {
   
-  GPIO_InitTypeDef GPIO_InitStruct;
-  
-  WEIGHT_SPIx_CLK_ENABLE();
-  WEIGHT_GPIO_CLK_ENABLE();
-  /**SPI1 GPIO Configuration    
-  PA5     ------> SPI1_SCK
-  PB4     ------> SPI1_MISO
-  PB5     ------> SPI1_MOSI 
-  */    
-  GPIO_InitStruct.Pin = WEIGHT_SCK_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-  HAL_GPIO_Init(WEIGHT_SCK_GPIO_Port, &GPIO_InitStruct);
-
-  GPIO_InitStruct.Pin = WEIGHT_MISO_Pin|WEIGHT_MOSI_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-  HAL_GPIO_Init(WEIGHT_MISO_GPIO_Port, &GPIO_InitStruct);
-  
-  GPIO_InitStruct.Pin = WEIGHT_CS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(WEIGHT_CS_GPIO_Port, &GPIO_InitStruct);  
-  
-  
-  hspi_weight.Instance = WEIGHT_SPIx;
-  hspi_weight.Init.Mode = SPI_MODE_MASTER;
-  hspi_weight.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi_weight.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi_weight.Init.CLKPolarity = SPI_POLARITY_HIGH;
-  hspi_weight.Init.CLKPhase = SPI_PHASE_2EDGE;
-  hspi_weight.Init.NSS = SPI_NSS_SOFT;
-  hspi_weight.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
-  hspi_weight.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi_weight.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi_weight.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi_weight.Init.CRCPolynomial = 7;
-  HAL_SPI_Init(&hspi_weight);
+ ;
 
 }
 
@@ -108,7 +66,10 @@ void AD7190_SetRegisterValue(unsigned char registerAddress,
         dataPointer ++;
         bytesNr --;
     }
-    HAL_SPI_Transmit(&hspi_weight,writeCommand, bytesNumber+1,0xFFFFFF);
+   // HAL_SPI_Transmit(&hspi_weight,writeCommand, bytesNumber+1,0xFFFFFF);
+		SLAVE_SELECT_LOW; 							//Start SPI Mode
+		SpiRawWrite(writeCommand, bytesNumber+1);
+		SLAVE_SELECT_HIGH; 						// Stop SPI Mode
 }
 
 /***************************************************************************//**
@@ -128,9 +89,14 @@ unsigned int AD7190_GetRegisterValue(unsigned char registerAddress,
     unsigned char i               = 0;
     
     address = AD7190_COMM_READ | AD7190_COMM_ADDR(registerAddress);
-    
-    HAL_SPI_Transmit(&hspi_weight,&address, 1,0xFFFFFF);    
-    HAL_SPI_Receive(&hspi_weight,registerWord,bytesNumber,0xFFFFFF);
+    SLAVE_SELECT_LOW; 							//Start SPI Mode
+    //HAL_SPI_Transmit(&hspi_weight,&address, 1,0xFFFFFF);    
+		SpiRawWrite(&address, 1);
+		
+    //HAL_SPI_Receive(&hspi_weight,registerWord,bytesNumber,0xFFFFFF);
+		SpiReadCont(registerWord,bytesNumber);
+		
+		SLAVE_SELECT_HIGH; 						// Stop SPI Mode
     for(i = 0; i < bytesNumber; i++) 
     {
       buffer = (buffer << 8) + registerWord[i];
@@ -154,7 +120,10 @@ void AD7190_Reset(void)
     registerWord[4] = 0xFF;
     registerWord[5] = 0xFF;
     registerWord[6] = 0xFF;
-    HAL_SPI_Transmit(&hspi_weight,registerWord, 7,0xFFFFFF);
+    //HAL_SPI_Transmit(&hspi_weight,registerWord, 7,0xFFFFFF);
+		SLAVE_SELECT_LOW; 							//Start SPI Mode
+		SpiRawWrite(registerWord, 7);
+		SLAVE_SELECT_HIGH; 						// Stop SPI Mode
 }
 /***************************************************************************//**
  * @brief Checks if the AD7190 part is present.
@@ -170,7 +139,7 @@ unsigned char AD7190_Init(void)
     AD7190_Reset();
   
     /* Allow at least 500 us before accessing any of the on-chip registers. */
-    HAL_Delay(1);
+    delay_ms(1);
     regVal = AD7190_GetRegisterValue(AD7190_REG_ID, 1);
 //    printf("ad7190:0x%X\n",regVal);
     if( (regVal & AD7190_ID_MASK) != ID_AD7190)
@@ -208,9 +177,10 @@ void AD7190_SetPower(unsigned char pwrMode)
 *******************************************************************************/
 void AD7190_WaitRdyGoLow(void)
 {
-    unsigned int timeOutCnt = 0xFFFFF;
+    static unsigned int timeOutCnt = 0xFFFFF;
+	timeOutCnt = 0x7FFFF;
     
-    while(AD7190_RDY_STATE && timeOutCnt--)
+    while(AD7190_RDY_STATE && ((timeOutCnt--)>1))
     {
         ;
     }
@@ -347,6 +317,7 @@ unsigned int AD7190_TemperatureRead(void)
 
 void weight_ad7190_conf(void)
 {
+	static uint32_t readBack[10];
   unsigned int command = 0x0;
 #ifdef AIN1P_AIN2N
   /* Calibrates channel AIN1(+) - AIN2(-). */
@@ -365,20 +336,35 @@ void weight_ad7190_conf(void)
   AD7190_GetRegisterValue(AD7190_REG_DATA, 3);
 #else
   /* Calibrates channel AIN3(+) - AIN4(-). */
+
+	
   AD7190_Calibrate(AD7190_MODE_CAL_INT_ZERO, AD7190_CH_AIN3P_AIN4M);
   /* Selects unipolar operation and ADC's input range to +-Vref/1. */
   AD7190_RangeSetup(0, AD7190_CONF_GAIN_128);
   AD7190_Calibrate(AD7190_MODE_CAL_INT_FULL,AD7190_CH_AIN3P_AIN4M);
   /* Performs a single conversion. */
   AD7190_ChannelSelect(AD7190_CH_AIN3P_AIN4M);    
+	
   command = AD7190_MODE_SEL(AD7190_MODE_CONT) | AD7190_MODE_CLKSRC(AD7190_CLK_INT) |\
-            AD7190_MODE_RATE(384)|AD7190_MODE_SINC3;
+            AD7190_MODE_RATE(100)|AD7190_MODE_SINC3;
+	
+	
   AD7190_SetRegisterValue(AD7190_REG_MODE, command, 3);
   AD7190_WaitRdyGoLow();
+	
+	readBack[2] = AD7190_GetRegisterValue(AD7190_REG_MODE,4);
+	AD7190_WaitRdyGoLow();
+
+
   AD7190_GetRegisterValue(AD7190_REG_DATA, 3);
   AD7190_WaitRdyGoLow();
   AD7190_GetRegisterValue(AD7190_REG_DATA, 3);
 #endif
+
+	AD7190_SetRegisterValue(AD7190_REG_GPOCON, AD7190_GPOCON_BPDSW, 1);
+  AD7190_WaitRdyGoLow();
+
+
 }
 
 unsigned int weight_ad7190_ReadAvg(unsigned char sampleNumber)

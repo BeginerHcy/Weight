@@ -139,8 +139,8 @@ V4.02:1476 */
 #define timeLong  1000
 typedef	enum {task2ms=0,task4ms,task20ms,task100ms,task500ms,taskLong} cycTaskIndex;
 ///////////////////////////////////////
-#define LATCH_HIGH SetDO(SPI1NSS,1)
-#define LATCH_LOW SetDO(SPI1NSS,0)
+#define SLAVE_SELECT_HIGH SetDO(SPI1NSS,1)
+#define SLAVE_SELECT_LOW SetDO(SPI1NSS,0)
 ///////////////////////////////////////
 #define Channel_Num  1 //
 #define Sample_Num  2 //
@@ -233,7 +233,7 @@ void FillUrtBuf(UrtBuf_type * pBoxIO,uint32_t USARTx);
 extern void SendUrtBuf(UrtBuf_type * pBoxIO,uint32_t USARTx);
 void MBLArry(int8_t *buffer,uint8_t bufLen);
 void TimCfg(uint32_t timeUs ,uint32_t BASEType);
-extern uint8_t SPI1_ReadWriteByte(uint8_t TxData);
+//extern uint8_t SPI1_ReadWriteByte(uint8_t TxData);
 extern uint8_t SPI2_ReadWriteByte(uint8_t TxData);
 extern void usec_delay(unsigned int t);
 extern void cyc1ms(void);
