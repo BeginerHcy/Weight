@@ -720,33 +720,6 @@
         </Group>
         <Group>
           <GroupName>CanOpen</GroupName>
-          <Files>
-            <File>
-              <FileName>canopen.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Canopen\canopen.c</FilePath>
-            </File>
-            <File>
-              <FileName>canopen_utils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Canopen\canopen_utils.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32_motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Canopen\stm32_motor.c</FilePath>
-            </File>
-            <File>
-              <FileName>robot_event.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Canopen\robot_event.c</FilePath>
-            </File>
-            <File>
-              <FileName>StepAxisObj.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Canopen\StepAxisObj.c</FilePath>
-            </File>
-          </Files>
         </Group>
         <Group>
           <GroupName>Modbus</GroupName>

@@ -14,12 +14,6 @@
 #include "adc.h"
 #include "motorky.h"
 #include "HC2500B.h"
-#include "canopen.h"
-#include "robot_event.h"
-#include "CanMaster.h"
-#include "canopen_utils.h"
-#include "Cia402.h"
-#include "StepAxisObj.h"
 #include "RTMotion.h"
 #include <stdio.h>
 #include <plctypes.h>
@@ -28,3 +22,4 @@
 #include "bsp_spiweight.h"
 
 #endif
+

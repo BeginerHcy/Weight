@@ -12,7 +12,6 @@ gMachineIO_type gMachineIO;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 
 u16 send_buf[100];
-static uint64_t Encoder_TIM;
 /////for LED/////
 uint8_t cntFlash,cntFlash500;
 bool flashLED[10];
@@ -206,12 +205,6 @@ void HwCfgInit()
 	
 	TimCfg(1000,TIMx2);
 	///////////////////////////
-
-	///////////////////////////
-	
-	RobotEventInit();
-	//////////////////////////////////////////////////////
-	////////////
 	CAN_Configuration(gSystemPara.CANBusBauderate);
 	/////////////
 	//Adc_Init();
@@ -695,17 +688,7 @@ void CAN1_RX0_IRQHandler(void)
 	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);	
 	
 }
-/*uint8_t SPI1_ReadWriteByte(uint8_t TxData)
-{
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_TXE) == RESET){}//
-	
-	SPI_I2S_SendData(SPI1, TxData); //
-		
-  while (SPI_I2S_GetFlagStatus(SPI1, SPI_I2S_FLAG_RXNE) == RESET){} //
- 
-	return SPI_I2S_ReceiveData(SPI1); //
-}
-*/
+
 void usec_delay(unsigned int t)
 {
 	delay_us(100);
