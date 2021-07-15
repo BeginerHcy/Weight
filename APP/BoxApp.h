@@ -7,6 +7,7 @@
 #include "string.h"
 #include "stm32f4xx_spi.h"
 #include <plctypes.h>
+#include "HwCfg.h"
 /* stdbool.h standard header */
 #ifndef _STDBOOL
 #define _STDBOOL
@@ -189,4 +190,7 @@ typedef struct SysParameter_type
 }SysParameter_type;
 extern SysParameter_type gSystemPara;
 extern SonarDualData_type SonarDual;
+extern int16_t inputReg[10];
+uint16_t CRC_Verify(uint8_t *CRC_Buf,uint8_t Buf_Length);
+
 #endif

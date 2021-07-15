@@ -193,7 +193,7 @@ void HwCfgInit()
 	
 	CfgUartx(Uartx1,3,Uart1TX,Uart1RX);
 	
-	CfgUartx(Uartx6,gSystemPara.RS485Bauderate,Uart6TX,Uart6RX);
+	CfgUartx(Uartx6,3,Uart6TX,Uart6RX);
 	
 	bsp_InitUart();// FOR MODBUS
 	bsp_InitTimer(); // FOR MODBUS
@@ -214,7 +214,9 @@ void HwCfgInit()
 	////////////
 	CAN_Configuration(gSystemPara.CANBusBauderate);
 	/////////////
-//	Adc_Init();
+	//Adc_Init();
+	gMachineIO.Uart3Data.USARTx = Uartx3;
+	gMachineIO.Uart1Data.USARTx = Uartx1;
 
 	delay_ms(2);
 	Encoder_Init_TIM5();
@@ -538,10 +540,11 @@ void MBLArry(int8_t *buffer,uint8_t bufLen)
 	}
 }
 
-void SendUrtBuf(UrtBuf_type * pBoxIO,uint32_t USARTx)
+void SendUrtBuf(UrtBuf_type * pBoxIO)
 {
 		unsigned char i;
 		unsigned char bufLen = pBoxIO->sLen;
+		uint32_t USARTx = pBoxIO->USARTx;
 		USART_TypeDef * Uarts;
 		Uarts = (USART_TypeDef*)USARTx;
 		switch(USARTx)

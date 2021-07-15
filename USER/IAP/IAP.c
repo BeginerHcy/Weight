@@ -21,7 +21,7 @@ void IAPAPP(void){
 		gMachineIO.Uart1Data.sBuffer[2] = crc>>8;
 		gMachineIO.Uart1Data.sBuffer[3] = crc>>0 & 0xFF; 
 		gMachineIO.Uart1Data.sLen = 4;	
-		SendUrtBuf(&gMachineIO.Uart1Data,Uartx1);
+		SendUrtBuf(&gMachineIO.Uart1Data);
 		IAPFirstBoot = 0;
 		dwnCtrl.iArry = 0;
 		dwnCtrl.demandIndex = 0;
@@ -61,7 +61,7 @@ void IAPAPP(void){
 		gMachineIO.Uart1Data.sBuffer[2] = crc>>8;
 		gMachineIO.Uart1Data.sBuffer[3] = crc>>0 & 0xFF; 
 		gMachineIO.Uart1Data.sLen = 4;	
-		SendUrtBuf(&gMachineIO.Uart1Data,Uartx1);
+		SendUrtBuf(&gMachineIO.Uart1Data);
 		
 		delay_ms(100);
 		

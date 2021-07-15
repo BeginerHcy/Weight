@@ -160,6 +160,7 @@ typedef struct UrtBuf_type
 	uint8_t  sLen;
 	uint8_t  flagS;
 	uint8_t  flagR;
+	uint32_t USARTx;
 }UrtBuf_type;
 
 typedef struct gMachineIO_type
@@ -230,7 +231,7 @@ extern void TIM4_PWM_Init(u32 arr,u32 psc);
 extern uint8_t ReadIn(uint32_t GPIOxADR, uint16_t GPIO_Pin,GPIOMode_TypeDef GPIOMode,GPIOPuPd_TypeDef GPIOPupd);
 extern void SetDO(uint32_t GPIOxADR,uint16_t GPIO_Pin,GPIOMode_TypeDef GPIOMode,GPIOPuPd_TypeDef GPIOPupd,GPIOOType_TypeDef OType,bool state);
 void FillUrtBuf(UrtBuf_type * pBoxIO,uint32_t USARTx);
-extern void SendUrtBuf(UrtBuf_type * pBoxIO,uint32_t USARTx);
+extern void SendUrtBuf(UrtBuf_type * pBoxIO);
 void MBLArry(int8_t *buffer,uint8_t bufLen);
 void TimCfg(uint32_t timeUs ,uint32_t BASEType);
 //extern uint8_t SPI1_ReadWriteByte(uint8_t TxData);

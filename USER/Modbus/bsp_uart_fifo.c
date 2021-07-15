@@ -494,7 +494,7 @@ void RS485_SendBuf(uint8_t *_ucaBuf, uint16_t _usLen)
 		gMachineIO.Uart3Data.sBuffer[i] = *(_ucaBuf+i);
 	}
 	gMachineIO.Uart3Data.sLen 				= _usLen;	
-	SendUrtBuf(&gMachineIO.Uart3Data,Uartx3);
+	SendUrtBuf(&gMachineIO.Uart3Data);
 	
 }
 
